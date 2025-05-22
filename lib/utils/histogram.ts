@@ -1,3 +1,5 @@
+import {Projection} from "../types/projection";
+
 export function buildHistogramByField<T>(
     items: T[],
     field: keyof T

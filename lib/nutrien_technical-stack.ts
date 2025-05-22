@@ -13,14 +13,14 @@ export class NutrienTechnicalStack extends cdk.Stack {
     const getCommoditiesLambda = new lambdaNodejs.NodejsFunction(this, 'GetCommoditiesLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
       entry: path.join(__dirname, '../lib/lambdas/handlers/get-commodities.ts'),
-      handler: 'handler',
+      handler: 'commodityHandler',
       timeout: cdk.Duration.seconds(10),
     });
 
-    const getCommodityTypesLambda = new lambdaNodejs.NodejsFunction(this, 'GetCommodityTypesLambda', {
+    const getCommodityTypesLambda = new lambdaNodejs.NodejsFunction(this, 'GetCommodityTypeLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
-      entry: path.join(__dirname, '../lib/lambdas/handlers/get-commodity-types.ts'),
-      handler: 'handler',
+      entry: path.join(__dirname, '../lib/lambdas/handlers/get-commodities.ts'),
+      handler: 'commodityTypesHandler',
     });
 
     const api = new apigateway.RestApi(this, 'TechnicalDemoApi', {

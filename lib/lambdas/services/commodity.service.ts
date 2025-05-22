@@ -13,9 +13,9 @@ export class CommodityService {
     private bucket : string = process.env.PROJECTION_BUCKET ?? '';
     private key : string = process.env.PROJECTION_KEY ?? '';
 
-    async getHistogram(): Promise<Histogram[]> {
+    async getHistogram(field: keyof Projection): Promise<Histogram[]> {
         const csvText = await this.s3Service.getFileContent(this.bucket, this.key);
         let parsedProjection = this.csvService.parseCsv<Projection>(csvText);
-        return buildHistogramByField(parsedProjection, "Commodity");
+        return buildHistogramByField(parsedProjection, field);
     }
 }

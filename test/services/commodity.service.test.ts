@@ -14,7 +14,7 @@ describe('CommodityService', () => {
     {
       Attribute: 'Harvested acres',
       Commodity: 'Rice',
-      CommodityType: 'Crops',
+      CommodityType: 'NotCrops',
       Units: 'Thousand acres',
       YearType: 'Market year',
       Year: '2019/20',
@@ -32,7 +32,7 @@ describe('CommodityService', () => {
     {
       Attribute: 'Planted acres',
       Commodity: 'Oats',
-      CommodityType: 'Crops',
+      CommodityType: 'NotCrops',
       Units: 'Million acres',
       YearType: 'Market year',
       Year: '2026/27',
@@ -53,30 +53,42 @@ describe('CommodityService', () => {
   });
 
   test('getHistogram should return objects', async () => {
-    const result = await service.getHistogram();
+    const result = await service.getHistogram("Commodity");
     expect(result).toBeDefined();
     expect(Array.isArray(result)).toBe(true);
     expect(result.length).toBeGreaterThan(0);
   });
 
   test('getHistogram should get csv from s3', async () => {
-    const result = await service.getHistogram();
+    const result = await service.getHistogram("Commodity");
     expect(mockS3Service.getFileContent).toHaveBeenCalledTimes(1);
   })
 
   test('getHistogram should use csv service to parse data', async () => {
-    const result = await service.getHistogram();
+    const result = await service.getHistogram("Commodity");
     expect(mockCsvService.parseCsv).toHaveBeenCalledTimes(1);
   })
 
   test('getHistogram should return histogram with amount of times in the list', async () => {
-    const result = await service.getHistogram();
+    const result = await service.getHistogram("Commodity");
     let firstItem = result[0];
     expect(firstItem).toBeDefined();
     expect(firstItem.Description).toBe('Rice');
     expect(firstItem.Count).toBe(2);
     let secondItem = result[1];
     expect(secondItem.Description).toBe('Oats');
+    expect(secondItem.Count).toBe(1);
+  })
+
+  test('getHistogram should return histogram with amount of times in the list_for_other_types', async () => {
+    const result = await service.getHistogram("CommodityType");
+    let firstItem = result[0];
+    expect(firstItem).toBeDefined();
+    expect(firstItem.Description).toBe('NotCrops');
+    expect(firstItem.Count).toBe(2);
+    let secondItem = result[1];
+    expect(secondItem.Description).toBe('Crops');
+
     expect(secondItem.Count).toBe(1);
   })
 });
