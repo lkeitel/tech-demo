@@ -9,11 +9,16 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 export class NutrienTechnicalStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
+    const sharedEnv = {
+      PROJECTION_BUCKET: 'nutrien-technical',
+      PROJECTION_KEY: 'Projection2021.csv',
+    };
 
     const getCommoditiesLambda = new lambdaNodejs.NodejsFunction(this, 'GetCommoditiesLambda', {
       runtime: lambda.Runtime.NODEJS_20_X,
       entry: path.join(__dirname, '../lib/lambdas/handlers/get-commodities.ts'),
       handler: 'commodityHandler',
+      environment: sharedEnv,
       timeout: cdk.Duration.seconds(10),
     });
 
@@ -21,6 +26,8 @@ export class NutrienTechnicalStack extends cdk.Stack {
       runtime: lambda.Runtime.NODEJS_20_X,
       entry: path.join(__dirname, '../lib/lambdas/handlers/get-commodities.ts'),
       handler: 'commodityTypesHandler',
+      environment: sharedEnv,
+      timeout: cdk.Duration.seconds(10),
     });
 
     const api = new apigateway.RestApi(this, 'TechnicalDemoApi', {
@@ -35,10 +42,9 @@ export class NutrienTechnicalStack extends cdk.Stack {
     const typeHistogram = commodityType.addResource('histogram');
     typeHistogram.addMethod('GET', new apigateway.LambdaIntegration(getCommodityTypesLambda));
 
-    getCommoditiesLambda.addEnvironment('PROJECTION_BUCKET', 'nutrien-technical');
-    getCommoditiesLambda.addEnvironment('PROJECTION_KEY', 'Projection2021.csv');
     const dataBucket = s3.Bucket.fromBucketName(this, 'ProjectionBucket', 'nutrien-technical');
 
     dataBucket.grantRead(getCommoditiesLambda);
+    dataBucket.grantRead(getCommodityTypesLambda);
   }
 }
