@@ -20,3 +20,39 @@ export const commodityTypesHandler: APIGatewayProxyHandler = async () => {
     body: JSON.stringify(data),
   };
 };
+
+export const unitsHandler: APIGatewayProxyHandler = async () => {
+  const data = await commodityService.getHistogram("Units");
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(data),
+  };
+};
+
+export const yearTypeHandler: APIGatewayProxyHandler = async () => {
+  const data = await commodityService.getHistogram("YearType");
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(data),
+  };
+};
+
+export const yearHandler: APIGatewayProxyHandler = async () => {
+  const data = await commodityService.getHistogram("Year");
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(data),
+  };
+};
+
+export const attributeHandler: APIGatewayProxyHandler = async () => {
+  const data = await commodityService.getHistogram("Attribute");
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify(data),
+  };
+};

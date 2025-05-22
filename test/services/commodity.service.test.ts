@@ -91,4 +91,16 @@ describe('CommodityService', () => {
 
     expect(secondItem.Count).toBe(1);
   })
+
+  test('getHistogram should return histogram with amount of times in the list_for_Attributes', async () => {
+    const result = await service.getHistogram("Attribute");
+    let firstItem = result[0];
+    expect(firstItem).toBeDefined();
+    expect(firstItem.Description).toBe('Harvested acres');
+    expect(firstItem.Count).toBe(2);
+    let secondItem = result[1];
+    expect(secondItem.Description).toBe('Planted acres');
+
+    expect(secondItem.Count).toBe(1);
+  })
 });
